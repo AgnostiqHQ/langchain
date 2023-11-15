@@ -130,6 +130,18 @@ def _import_cohere() -> Any:
     return Cohere
 
 
+def _import_covalent() -> Any:
+    from langchain.llms.covalent import Covalent
+
+    return Covalent
+
+
+def _import_covalent_cloud() -> Any:
+    from langchain.llms.covalent_cloud import CovalentCloud
+
+    return CovalentCloud
+
+
 def _import_ctransformers() -> Any:
     from langchain.llms.ctransformers import CTransformers
 
@@ -541,6 +553,10 @@ def __getattr__(name: str) -> Any:
         return _import_clarifai()
     elif name == "Cohere":
         return _import_cohere()
+    elif name == "Covalent":
+        return _import_covalent()
+    elif name == "CovalentCloud":
+        return _import_covalent_cloud()
     elif name == "CTransformers":
         return _import_ctransformers()
     elif name == "CTranslate2":
@@ -695,6 +711,8 @@ __all__ = [
     "ChatGLM",
     "Clarifai",
     "Cohere",
+    "Covalent",
+    "CovalentCloud",
     "Databricks",
     "DeepInfra",
     "DeepSparse",
@@ -777,6 +795,8 @@ def get_type_to_cls_dict() -> Dict[str, Callable[[], Type[BaseLLM]]]:
         "chat_glm": _import_chatglm,
         "clarifai": _import_clarifai,
         "cohere": _import_cohere,
+        "covalent": _import_covalent,
+        "covalent_cloud": _import_covalent_cloud,
         "ctransformers": _import_ctransformers,
         "ctranslate2": _import_ctranslate2,
         "databricks": _import_databricks,
