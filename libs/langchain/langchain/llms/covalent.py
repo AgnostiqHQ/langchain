@@ -32,8 +32,10 @@ else:
 
 # Handle case that ``covalent-cloud`` is not installed.
 # Prevent import errors when loading this module.
+_COVALENT_CLOUD_SDK_INSTALLED = False
 try:
     from covalent_cloud import CloudExecutor
+    _COVALENT_CLOUD_SDK_INSTALLED = True
 except ImportError:
     _CC_EXECUTOR_TYPE = Any
 else:
@@ -48,14 +50,20 @@ _EXECUTOR_TYPE = Union[str, _CT_ASYNC_EXECUTOR_TYPE,
 logger = logging.getLogger(__name__)
 
 
-def _check_installation():
+def _check_covalent_installed(cloud: bool) -> None:
     """Check that the Covalent SDK is installed."""
-
-    if not _COVALENT_SDK_INSTALLED:
-        raise RuntimeError(
-            "The Covalent SDK is not installed. To install, run\n\n"
-            "pip install covalent"
-        )
+    if cloud:
+        if not _COVALENT_CLOUD_SDK_INSTALLED:
+            raise RuntimeError(
+                "The Covalent Cloud SDK is not installed. To install, run\n\n"
+                "pip install covalent-cloud"
+            )
+    else:
+        if not _COVALENT_SDK_INSTALLED:
+            raise RuntimeError(
+                "The Covalent SDK is not installed. To install, run\n\n"
+                "pip install covalent"
+            )
 
 
 class _CovalentBase(LLM):
@@ -194,7 +202,7 @@ class Covalent(_CovalentBase):
     """
 
     def __init__(self, **kwargs):
-        _check_installation()
+        _check_covalent_installed(cloud=False)
         super().__init__(**kwargs)
 
     @root_validator(pre=True)

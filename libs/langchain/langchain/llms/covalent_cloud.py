@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.pydantic_v1 import root_validator
 
-from .covalent import _CovalentBase, Result
+from .covalent import Result, _check_covalent_installed, _CovalentBase
 
 # Handle case that ``covalent-cloud`` is not installed.
 # Prevent import errors when loading this module.
@@ -23,16 +23,6 @@ else:
 
 
 logger = logging.getLogger(__name__)
-
-
-def _check_cloud_installation():
-    """Check that the Covalent SDK is installed."""
-
-    if not _COVALENT_CLOUD_SDK_INSTALLED:
-        raise RuntimeError(
-            "The Covalent Cloud SDK is not installed. To install, run\n\n"
-            "pip install covalent-cloud"
-        )
 
 
 class CovalentCloud(_CovalentBase):
@@ -93,7 +83,7 @@ class CovalentCloud(_CovalentBase):
     """
 
     def __init__(self, **kwargs):
-        _check_cloud_installation()
+        _check_covalent_installed(cloud=True)
         super().__init__(**kwargs)
 
         if self.api_key is not None:
